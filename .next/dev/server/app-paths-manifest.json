@@ -1,0 +1,7 @@
+{
+  "/(dashboard)/ai-tools/[slug]/page": "app/(dashboard)/ai-tools/[slug]/page.js",
+  "/(dashboard)/ai-tools/page": "app/(dashboard)/ai-tools/page.js",
+  "/(dashboard)/page": "app/(dashboard)/page.js",
+  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js",
+  "/api/gemini/route": "app/api/gemini/route.js"
+}
