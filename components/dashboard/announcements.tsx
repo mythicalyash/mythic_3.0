@@ -1,33 +1,17 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Bell, Calendar, Megaphone, Star } from "lucide-react"
 
-const announcements = [
-  {
-    id: 1,
-    title: "New AI Tools Released",
-    description: "Check out our latest AI-powered content generation tools",
-    type: "new",
-    date: "2 hours ago",
-    icon: Star,
-  },
-  {
-    id: 2,
-    title: "Scheduled Maintenance",
-    description: "Platform will be down for maintenance on Dec 1st, 2-4 AM",
-    type: "warning",
-    date: "1 day ago",
-    icon: Calendar,
-  },
-  {
-    id: 3,
-    title: "Community Milestone",
-    description: "We've reached 10,000 active members! Thank you all!",
-    type: "info",
-    date: "3 days ago",
-    icon: Megaphone,
-  },
-]
+interface Announcement {
+  id: number
+  title: string
+  content: string // Changed from description to content to match API
+  type: "new" | "warning" | "info"
+  date: string
+}
 
 const getBadgeVariant = (type: string) => {
   switch (type) {
@@ -55,7 +39,30 @@ const getBadgeLabel = (type: string) => {
   }
 }
 
+const getIcon = (type: string) => {
+  switch (type) {
+    case "new": return Star
+    case "warning": return Calendar
+    default: return Megaphone
+  }
+}
+
 export function Announcements() {
+  const [announcements, setAnnouncements] = useState<Announcement[]>([])
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const res = await fetch("/api/announcements")
+        const data = await res.json()
+        setAnnouncements(data.slice(0, 3)) // Show only top 3
+      } catch (error) {
+        console.error("Failed to fetch announcements", error)
+      }
+    }
+    fetchAnnouncements()
+  }, [])
+
   return (
     <Card className="rounded-2xl border-none bg-card shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-3">
@@ -69,26 +76,29 @@ export function Announcements() {
       </CardHeader>
       <CardContent className="pt-2">
         <div className="space-y-4">
-          {announcements.map((announcement) => (
-            <div
-              key={announcement.id}
-              className="group flex items-start gap-4 rounded-xl p-4 transition-colors hover:bg-muted/50 cursor-pointer"
-            >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#C7EEFF]">
-                <announcement.icon className="h-5 w-5 text-[#0077C0]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-semibold text-base text-foreground truncate">{announcement.title}</h4>
-                  <Badge className={`shrink-0 text-xs px-2 py-0.5 ${getBadgeVariant(announcement.type)}`}>
-                    {getBadgeLabel(announcement.type)}
-                  </Badge>
+          {announcements.map((announcement) => {
+            const Icon = getIcon(announcement.type)
+            return (
+              <div
+                key={announcement.id}
+                className="group flex items-start gap-4 rounded-xl p-4 transition-colors hover:bg-muted/50 cursor-pointer"
+              >
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#C7EEFF]">
+                  <Icon className="h-5 w-5 text-[#0077C0]" />
                 </div>
-                <p className="text-sm text-muted-foreground line-clamp-1">{announcement.description}</p>
-                <span className="text-xs text-muted-foreground/70 mt-1 block">{announcement.date}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-semibold text-base text-foreground truncate">{announcement.title}</h4>
+                    <Badge className={`shrink-0 text-xs px-2 py-0.5 ${getBadgeVariant(announcement.type)}`}>
+                      {getBadgeLabel(announcement.type)}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground line-clamp-1">{announcement.content}</p>
+                  <span className="text-xs text-muted-foreground/70 mt-1 block">{announcement.date}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </CardContent>
     </Card>

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1764458271435,
+    "title": "e qecq",
+    "content": "lwde ka announcemte",
+    "type": "warning",
+    "date": "2025-11-29",
+    "author": "Admin"
+  },
+  {
+    "id": 2,
+    "title": "Library Maintenance",
+    "content": "The library will be closed for maintenance on Saturday.",
+    "date": "2024-01-14",
+    "author": "Admin",
+    "type": "warning"
+  },
+  {
+    "id": 3,
+    "title": "New Study Materials Available",
+    "content": "New study materials for Semester 5 are now available in the Study Hub.",
+    "date": "2024-01-13",
+    "author": "Admin",
+    "type": "new"
+  }
+]

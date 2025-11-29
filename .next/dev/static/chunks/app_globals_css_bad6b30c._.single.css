@@ -109,6 +109,7 @@
     --color-green-600: #00a544;
     --color-emerald-500: #00bb7f;
     --color-cyan-500: #00b7d7;
+    --color-sky-500: #00a5ef;
     --color-blue-100: #dbeafe;
     --color-blue-500: #3080ff;
     --color-indigo-500: #625fff;
@@ -187,6 +188,7 @@
       --color-green-600: lab(59.0978% -58.6621 41.2579);
       --color-emerald-500: lab(66.9756% -58.27 19.5419);
       --color-cyan-500: lab(67.805% -35.3952 -30.2018);
+      --color-sky-500: lab(63.3038% -18.433 -51.0407);
       --color-blue-100: lab(92.0301% -2.24757 -11.6453);
       --color-blue-500: lab(54.1736% 13.3369 -74.6839);
       --color-indigo-500: lab(48.295% 38.3129 -81.9673);
@@ -876,10 +878,6 @@
     margin-left: calc(var(--spacing) * 4);
   }
 
-  .ml-64 {
-    margin-left: calc(var(--spacing) * 64);
-  }
-
   .ml-auto {
     margin-left: auto;
   }
@@ -1184,6 +1182,10 @@
 
   .max-h-0 {
     max-height: calc(var(--spacing) * 0);
+  }
+
+  .max-h-\[60vh\] {
+    max-height: 60vh;
   }
 
   .max-h-\[300px\] {
@@ -2356,6 +2358,16 @@
     background-color: var(--muted);
   }
 
+  .bg-muted\/30 {
+    background-color: var(--muted);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-muted\/30 {
+      background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+    }
+  }
+
   .bg-muted\/50 {
     background-color: var(--muted);
   }
@@ -2468,6 +2480,16 @@
 
   .bg-sidebar-border {
     background-color: var(--sidebar-border);
+  }
+
+  .bg-sky-500\/10 {
+    background-color: #00a5ef1a;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-sky-500\/10 {
+      background-color: color-mix(in oklab, var(--color-sky-500) 10%, transparent);
+    }
   }
 
   .bg-transparent {
@@ -2717,6 +2739,10 @@
 
   .py-6 {
     padding-block: calc(var(--spacing) * 6);
+  }
+
+  .py-8 {
+    padding-block: calc(var(--spacing) * 8);
   }
 
   .py-10 {
@@ -3169,6 +3195,10 @@
     }
   }
 
+  .text-sky-500 {
+    color: var(--color-sky-500);
+  }
+
   .text-white {
     color: var(--color-white);
   }
@@ -3492,6 +3522,13 @@
 
   .group-focus-within\/menu-item\:opacity-100:is(:where(.group\/menu-item):focus-within *) {
     opacity: 1;
+  }
+
+  @media (hover: hover) {
+    .group-hover\:translate-x-1:is(:where(.group):hover *) {
+      --tw-translate-x: calc(var(--spacing) * 1);
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
   }
 
   @media (hover: hover) {
@@ -4006,6 +4043,18 @@
   }
 
   @media (hover: hover) {
+    .hover\:border-primary\/50:hover {
+      border-color: var(--primary);
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:border-primary\/50:hover {
+        border-color: color-mix(in oklab, var(--primary) 50%, transparent);
+      }
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:border-purple-500\/50:hover {
       border-color: #ac4bff80;
     }
@@ -4052,6 +4101,18 @@
   @media (hover: hover) {
     .hover\:bg-card:hover {
       background-color: var(--card);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-destructive\/10:hover {
+      background-color: var(--destructive);
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-destructive\/10:hover {
+        background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+      }
     }
   }
 
@@ -4182,6 +4243,12 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-transparent:hover {
+      background-color: #0000;
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:bg-white\/90:hover {
       background-color: #ffffffe6;
     }
@@ -4196,6 +4263,12 @@
   @media (hover: hover) {
     .hover\:text-accent-foreground:hover {
       color: var(--accent-foreground);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:text-destructive:hover {
+      color: var(--destructive);
     }
   }
 
@@ -5534,6 +5607,12 @@
   }
 
   @media (min-width: 40rem) {
+    .sm\:max-w-\[425px\] {
+      max-width: 425px;
+    }
+  }
+
+  @media (min-width: 40rem) {
     .sm\:max-w-\[500px\] {
       max-width: 500px;
     }
@@ -5692,12 +5771,6 @@
   @media (min-width: 48rem) {
     .md\:grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 48rem) {
-    .md\:grid-cols-5 {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
     }
   }
 

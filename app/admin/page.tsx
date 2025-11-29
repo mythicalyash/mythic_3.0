@@ -75,14 +75,7 @@ const mockApplicants = [
 ]
 
 const adminPages = [
-    {
-        name: "Admin Query",
-        href: "/admin/query",
-        icon: MessageSquare,
-        description: "Manage student queries",
-        color: "text-blue-500",
-        bg: "bg-blue-500/10",
-    },
+
     {
         name: "Announcements",
         href: "/admin/announcements",

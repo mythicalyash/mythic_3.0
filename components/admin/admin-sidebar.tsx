@@ -21,7 +21,6 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 
 const navigation = [
     { name: "Admin Home", href: "/admin", icon: Home },
-    { name: "Admin Query", href: "/admin/query", icon: MessageSquare },
     { name: "Announcements", href: "/admin/announcements", icon: Megaphone },
     { name: "Admin Study Hub", href: "/admin/study-hub", icon: BookOpen },
     { name: "Lost & Found", href: "/admin/lost-found", icon: Search },

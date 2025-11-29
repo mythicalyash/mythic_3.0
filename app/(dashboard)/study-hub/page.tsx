@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     Book,
     FileText,
@@ -15,6 +15,10 @@ import {
     Cpu,
     Globe,
     Network,
+    ArrowLeft,
+    File,
+    Link as LinkIcon,
+    Download
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -27,90 +31,133 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
-// Mock Data for Subjects
-const subjects = [
-    {
-        id: "java",
-        name: "JAVA",
-        subtitle: "Object Oriented Programming",
-        icon: Code2,
-        resources: [
-            { name: "eBooks", icon: BookOpen },
-            { name: "PDF Notes", icon: FileText },
-            { name: "Summarized Notes", icon: Files, badge: "New", badgeColor: "bg-[#27C46B]" },
-            { name: "Practice Questions", icon: HelpCircle },
-        ],
-    },
-    {
-        id: "dsa",
-        name: "DSA",
-        subtitle: "Data Structures & Algorithms",
-        icon: Cpu,
-        resources: [
-            { name: "eBooks", icon: BookOpen },
-            { name: "PDF Notes", icon: FileText, badge: "Popular", badgeColor: "bg-[#FFA146]" },
-            { name: "Summarized Notes", icon: Files },
-            { name: "Practice Questions", icon: HelpCircle },
-        ],
-    },
-    {
-        id: "dbms",
-        name: "DBMS",
-        subtitle: "Database Management Systems",
-        icon: Database,
-        resources: [
-            { name: "eBooks", icon: BookOpen },
-            { name: "PDF Notes", icon: FileText },
-            { name: "Summarized Notes", icon: Files },
-            { name: "Practice Questions", icon: HelpCircle, badge: "New", badgeColor: "bg-[#27C46B]" },
-        ],
-    },
-    {
-        id: "os",
-        name: "OS",
-        subtitle: "Operating Systems",
-        icon: Layout,
-        resources: [
-            { name: "eBooks", icon: BookOpen },
-            { name: "PDF Notes", icon: FileText },
-            { name: "Summarized Notes", icon: Files },
-            { name: "Practice Questions", icon: HelpCircle },
-        ],
-    },
-    {
-        id: "web-dev",
-        name: "Web Development",
-        subtitle: "Full Stack Development",
-        icon: Globe,
-        resources: [
-            { name: "eBooks", icon: BookOpen },
-            { name: "PDF Notes", icon: FileText },
-            { name: "Summarized Notes", icon: Files },
-            { name: "Practice Questions", icon: HelpCircle },
-        ],
-    },
-    {
-        id: "cn",
-        name: "Computer Network",
-        subtitle: "Network Fundamentals",
-        icon: Network,
-        resources: [
-            { name: "eBooks", icon: BookOpen },
-            { name: "PDF Notes", icon: FileText },
-            { name: "Summarized Notes", icon: Files },
-            { name: "Practice Questions", icon: HelpCircle },
-        ],
-    },
-]
+interface Subject {
+    id: string
+    name: string
+    subtitle: string
+}
+
+interface Resource {
+    id: number
+    subjectId: string
+    title: string
+    fileUrl?: string
+    content?: string
+    fileType: "pdf" | "text"
+    date: string
+}
 
 export default function StudyHubPage() {
     const [semester, setSemester] = useState("Semester 1")
     const [department, setDepartment] = useState("CSE – Computer Science Engineering")
-    // Track open state for each card independently
-    const [openCards, setOpenCards] = useState<Record<string, boolean>>({})
 
-    const toggleCard = (id: string) => {
-        setOpenCards((prev) => ({ ...prev, [id]: !prev[id] }))
+    const [subjects, setSubjects] = useState<Subject[]>([])
+    const [resources, setResources] = useState<Resource[]>([])
+    const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null)
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const fetchData = async () => {
+        try {
+            const res = await fetch("/api/study-hub")
+            const data = await res.json()
+            setSubjects(data.subjects || [])
+            setResources(data.resources || [])
+        } catch (error) {
+            console.error("Failed to fetch data", error)
+        }
+    }
+
+    const getSubjectResources = (subjectId: string) => {
+        return resources.filter(r => r.subjectId === subjectId)
+    }
+
+    // Icon mapping helper (optional, can fallback to BookOpen)
+    const getSubjectIcon = (name: string) => {
+        const lower = name.toLowerCase()
+        if (lower.includes("java")) return Code2
+        if (lower.includes("dsa")) return Cpu
+        if (lower.includes("dbms")) return Database
+        if (lower.includes("os")) return Layout
+        if (lower.includes("web")) return Globe
+        if (lower.includes("network")) return Network
+        return BookOpen
+    }
+
+    if (selectedSubject) {
+        const subjectResources = getSubjectResources(selectedSubject.id)
+        const SubjectIcon = getSubjectIcon(selectedSubject.name)
+
+        return (
+            <div className="space-y-6">
+                <Button
+                    variant="ghost"
+                    onClick={() => setSelectedSubject(null)}
+                    className="gap-2 pl-0 hover:bg-transparent hover:text-primary"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Subjects
+                </Button>
+
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                        <SubjectIcon className="h-8 w-8" />
+                    </div>
+                    <div>
+                        <h1 className="text-3xl font-bold text-foreground">{selectedSubject.name}</h1>
+                        <p className="text-muted-foreground">{selectedSubject.subtitle}</p>
+                    </div>
+                </div>
+
+                <div className="grid gap-4">
+                    {subjectResources.length === 0 ? (
+                        <Card className="rounded-2xl border-dashed border-2 border-border bg-muted/30">
+                            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                                <FileText className="h-12 w-12 text-muted-foreground mb-4 opacity-50" />
+                                <h3 className="text-lg font-semibold">No resources yet</h3>
+                                <p className="text-muted-foreground">Check back later for study materials.</p>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        subjectResources.map((resource) => (
+                            <Card key={resource.id} className="rounded-xl border border-border bg-card hover:shadow-md transition-all">
+                                <CardContent className="p-4 flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-4 overflow-hidden">
+                                        <div className="h-12 w-12 shrink-0 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                                            {resource.fileType === 'pdf' ? <File className="h-6 w-6" /> : <FileText className="h-6 w-6" />}
+                                        </div>
+                                        <div className="min-w-0">
+                                            <h3 className="font-semibold text-foreground truncate">{resource.title}</h3>
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                <span>{resource.date}</span>
+                                                <span>•</span>
+                                                <span className="uppercase">{resource.fileType}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {resource.fileType === 'pdf' && resource.fileUrl && (
+                                        <Button className="rounded-xl shrink-0" asChild>
+                                            <a href={resource.fileUrl} target="_blank" rel="noopener noreferrer">
+                                                <Download className="h-4 w-4 mr-2" />
+                                                Download
+                                            </a>
+                                        </Button>
+                                    )}
+                                    {resource.fileType === 'text' && (
+                                        <Button variant="outline" className="rounded-xl shrink-0">
+                                            View
+                                        </Button>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        ))
+                    )}
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -166,70 +213,34 @@ export default function StudyHubPage() {
             {/* Subject Cards Grid */}
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {subjects.map((subject) => {
-                    const isOpen = openCards[subject.id] || false
-                    return (
-                        <div
-                            key={subject.id}
-                            className={cn(
-                                "relative transition-all duration-200",
-                                isOpen ? "z-50" : "z-0"
-                            )}
-                        >
-                            <Card className="overflow-visible rounded-2xl border-border bg-card shadow-sm transition-all hover:shadow-md">
-                                <CardHeader className="bg-card p-6 relative z-20 rounded-2xl">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex gap-4">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                                                <subject.icon className="h-6 w-6" />
-                                            </div>
-                                            <div>
-                                                <CardTitle className="text-lg font-bold text-foreground">{subject.name}</CardTitle>
-                                                <p className="text-sm text-muted-foreground">{subject.subtitle}</p>
-                                            </div>
-                                        </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => toggleCard(subject.id)}
-                                            className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-muted"
-                                        >
-                                            <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", isOpen && "rotate-180")} />
-                                        </Button>
-                                    </div>
-                                </CardHeader>
+                    const SubjectIcon = getSubjectIcon(subject.name)
+                    const resourceCount = getSubjectResources(subject.id).length
 
-                                {/* Floating Content */}
-                                <div
-                                    className={cn(
-                                        "absolute left-0 right-0 top-[calc(100%-1rem)] bg-card rounded-b-2xl border border-t-0 border-border shadow-lg transition-all duration-200 ease-in-out overflow-hidden z-10",
-                                        isOpen ? "max-h-[500px] opacity-100 pt-6" : "max-h-0 opacity-0 pt-0"
-                                    )}
-                                >
-                                    <CardContent className="p-6">
-                                        <div className="grid grid-cols-2 gap-3">
-                                            {subject.resources.map((resource, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="group relative flex flex-col items-center justify-center gap-2 rounded-xl border border-border bg-background p-4 text-center transition-colors hover:border-primary/30 hover:bg-primary/5 cursor-pointer"
-                                                >
-                                                    {resource.badge && (
-                                                        <Badge
-                                                            className={`absolute -right-2 -top-2 px-1.5 py-0.5 text-[10px] text-white hover:bg-opacity-90 ${resource.badgeColor}`}
-                                                        >
-                                                            {resource.badge}
-                                                        </Badge>
-                                                    )}
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                                                        <resource.icon className="h-4 w-4" />
-                                                    </div>
-                                                    <span className="text-xs font-medium text-foreground">{resource.name}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </CardContent>
+                    return (
+                        <Card
+                            key={subject.id}
+                            className="group cursor-pointer overflow-hidden rounded-2xl border-border bg-card shadow-sm transition-all hover:shadow-md hover:border-primary/50"
+                            onClick={() => setSelectedSubject(subject)}
+                        >
+                            <CardHeader className="p-6">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                                        <SubjectIcon className="h-6 w-6" />
+                                    </div>
+                                    <Badge variant="secondary" className="rounded-lg bg-muted text-muted-foreground">
+                                        {resourceCount} Resources
+                                    </Badge>
                                 </div>
-                            </Card>
-                        </div>
+                                <CardTitle className="text-xl font-bold text-foreground mb-1">{subject.name}</CardTitle>
+                                <p className="text-sm text-muted-foreground">{subject.subtitle}</p>
+                            </CardHeader>
+                            <CardContent className="p-6 pt-0">
+                                <div className="flex items-center text-sm text-primary font-medium">
+                                    View Materials
+                                    <ArrowLeft className="h-4 w-4 ml-1 rotate-180 transition-transform group-hover:translate-x-1" />
+                                </div>
+                            </CardContent>
+                        </Card>
                     )
                 })}
             </div>

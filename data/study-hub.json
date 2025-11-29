@@ -1,0 +1,40 @@
+{
+  "subjects": [
+    {
+      "id": "java",
+      "name": "JAVA",
+      "subtitle": "Object Oriented Programming"
+    },
+    {
+      "id": "dsa",
+      "name": "DSA",
+      "subtitle": "Data Structures & Algorithms"
+    },
+    {
+      "id": "dbms",
+      "name": "DBMS",
+      "subtitle": "Database Management Systems"
+    },
+    {
+      "id": "os",
+      "name": "OS",
+      "subtitle": "Operating Systems"
+    },
+    {
+      "id": "web-dev",
+      "name": "Web Development",
+      "subtitle": "Full Stack Development"
+    },
+    {
+      "id": "cn",
+      "name": "Computer Network",
+      "subtitle": "Network Fundamentals"
+    },
+    {
+      "id": "dfgh",
+      "name": "dfgh",
+      "subtitle": "fcgvh"
+    }
+  ],
+  "resources": []
+}
