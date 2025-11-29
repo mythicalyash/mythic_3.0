@@ -44,6 +44,50 @@
   --sidebar-ring: #0077c0;
 }
 
+.dark {
+  --background: #000000;
+  /* Pure Black */
+  --foreground: #FFFFFF;
+  /* Crisp White */
+  --card: #18181B;
+  /* Very Dark Gray */
+  --card-foreground: #FFFFFF;
+  --popover: #18181B;
+  --popover-foreground: #FFFFFF;
+  --primary: #EAB308;
+  /* Golden Yellow */
+  --primary-foreground: #000000;
+  --secondary: #27272A;
+  --secondary-foreground: #FFFFFF;
+  --muted: #27272A;
+  --muted-foreground: #E4E4E7;
+  /* Soft Platinum Gray */
+  --accent: #27272A;
+  --accent-foreground: #FFFFFF;
+  --destructive: #991b1b;
+  --destructive-foreground: #FFFFFF;
+  --success: #166534;
+  --success-foreground: #FFFFFF;
+  --warning: #854d0e;
+  --warning-foreground: #FFFFFF;
+  --border: #27272A;
+  --input: #27272A;
+  --ring: #EAB308;
+  --chart-1: #EAB308;
+  --chart-2: #166534;
+  --chart-3: #854d0e;
+  --chart-4: #991b1b;
+  --chart-5: #6d28d9;
+  --sidebar: #000000;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #EAB308;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #27272A;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #27272A;
+  --sidebar-ring: #EAB308;
+}
+
 @theme inline {
   --font-sans: "Inter", "Inter Fallback", sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;

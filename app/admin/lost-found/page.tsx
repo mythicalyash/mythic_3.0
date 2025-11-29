@@ -231,8 +231,8 @@ export default function AdminLostFoundPage() {
                 <Button
                     variant={activeTab === "found" ? "default" : "ghost"}
                     className={`rounded-xl px-6 ${activeTab === "found"
-                            ? "bg-primary text-primary-foreground shadow-md"
-                            : "bg-card hover:bg-muted text-foreground"
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "bg-card hover:bg-muted text-foreground"
                         }`}
                     onClick={() => setActiveTab("found")}
                 >
@@ -241,8 +241,8 @@ export default function AdminLostFoundPage() {
                 <Button
                     variant={activeTab === "lost" ? "default" : "ghost"}
                     className={`rounded-xl px-6 ${activeTab === "lost"
-                            ? "bg-primary text-primary-foreground shadow-md"
-                            : "bg-card hover:bg-muted text-foreground"
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "bg-card hover:bg-muted text-foreground"
                         }`}
                     onClick={() => setActiveTab("lost")}
                 >
@@ -252,7 +252,7 @@ export default function AdminLostFoundPage() {
 
             {/* Stats */}
             {activeTab === "found" ? (
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     <Card className="rounded-2xl border-none bg-card shadow-sm">
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
@@ -462,7 +462,7 @@ export default function AdminLostFoundPage() {
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <MapPin className="h-4 w-4" />
                                     <span>{item.location}</span>
@@ -510,10 +510,10 @@ export default function AdminLostFoundPage() {
                                                 <div className="flex items-center gap-2">
                                                     <Badge
                                                         className={`rounded-full text-xs ${ticket.status === "pending"
-                                                                ? "bg-[#FFA146] text-white"
-                                                                : ticket.status === "approved"
-                                                                    ? "bg-[#27C46B] text-white"
-                                                                    : "bg-red-500 text-white"
+                                                            ? "bg-[#FFA146] text-white"
+                                                            : ticket.status === "approved"
+                                                                ? "bg-[#27C46B] text-white"
+                                                                : "bg-red-500 text-white"
                                                             }`}
                                                     >
                                                         {ticket.status}

@@ -46,5 +46,16 @@ export const aiConfig: Record<
     - Format the output using Markdown where appropriate.`,
         model: "gemini-2.5-pro",
         temperature: 0.7,
+    },
+    "notes-summarizer": {
+        systemPrompt: `You are an expert Notes Summarizer. Your goal is to condense long notes, documents, or text into clear, concise, and easy-to-understand summaries.
+    - Identify the main topics and key points.
+    - Use bullet points or numbered lists for readability.
+    - Highlight important definitions, dates, or action items.
+    - Maintain the original context and meaning.
+    - If the notes are disorganized, structure the summary logically.
+    - Format the output using Markdown.`,
+        model: "gemini-2.5-pro",
+        temperature: 0.3,
     }
 }

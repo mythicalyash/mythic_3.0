@@ -45,7 +45,7 @@ interface FoundItem {
     name: string
     id: string
   }
-  status: "available" | "claimed" | "collected"
+  status: "available" | "pending" | "collected"
   reportedAt: string
   claimTickets?: ClaimTicket[]
 }
@@ -185,7 +185,7 @@ export default function LostFoundPage() {
         item.id === selectedItem.id
           ? {
             ...item,
-            status: "claimed",
+            status: "pending",
             claimTickets: [...(item.claimTickets || []), claimTicket],
           }
           : item
@@ -209,7 +209,7 @@ export default function LostFoundPage() {
   const stats = {
     found: {
       available: items.filter((i) => i.type === "found" && i.status === "available").length,
-      claimed: items.filter((i) => i.type === "found" && i.status === "claimed").length,
+      pending: items.filter((i) => i.type === "found" && i.status === "pending").length,
       collected: items.filter((i) => i.type === "found" && i.status === "collected").length,
     },
     lost: {
@@ -221,7 +221,7 @@ export default function LostFoundPage() {
     switch (status) {
       case "available":
         return "bg-[#27C46B] text-white"
-      case "claimed":
+      case "pending":
         return "bg-[#FFA146] text-white"
       case "collected":
         return "bg-[#AAC4F5] text-white"
@@ -439,8 +439,8 @@ export default function LostFoundPage() {
         <Button
           variant={activeTab === "found" ? "default" : "ghost"}
           className={`rounded-xl px-6 ${activeTab === "found"
-              ? "bg-primary text-primary-foreground shadow-md"
-              : "bg-card hover:bg-muted text-foreground"
+            ? "bg-primary text-primary-foreground shadow-md"
+            : "bg-card hover:bg-muted text-foreground"
             }`}
           onClick={() => setActiveTab("found")}
         >
@@ -449,8 +449,8 @@ export default function LostFoundPage() {
         <Button
           variant={activeTab === "lost" ? "default" : "ghost"}
           className={`rounded-xl px-6 ${activeTab === "lost"
-              ? "bg-primary text-primary-foreground shadow-md"
-              : "bg-card hover:bg-muted text-foreground"
+            ? "bg-primary text-primary-foreground shadow-md"
+            : "bg-card hover:bg-muted text-foreground"
             }`}
           onClick={() => setActiveTab("lost")}
         >
@@ -475,8 +475,8 @@ export default function LostFoundPage() {
               <AlertCircle className="h-5 w-5 text-[#FFA146]" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{stats.found.claimed}</p>
-              <p className="text-xs text-muted-foreground">Claimed</p>
+              <p className="text-2xl font-bold text-foreground">{stats.found.pending}</p>
+              <p className="text-xs text-muted-foreground">Pending</p>
             </div>
           </div>
           <div className="flex items-center gap-3 rounded-2xl bg-card p-4 shadow-sm">
@@ -578,7 +578,7 @@ export default function LostFoundPage() {
                           Claim Item
                         </Button>
                       )}
-                      {item.status === "claimed" && (
+                      {item.status === "pending" && (
                         <div className="text-center text-sm text-muted-foreground">
                           Claim pending review
                         </div>

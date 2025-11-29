@@ -65,7 +65,7 @@ export default function AdminLeaderboardPage() {
                             }`}
                     >
                         <CardContent className="p-6">
-                            <div className="flex items-center gap-6">
+                            <div className="flex flex-col sm:flex-row items-center gap-6">
                                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary font-bold text-xl">
                                     {student.rank}
                                 </div>

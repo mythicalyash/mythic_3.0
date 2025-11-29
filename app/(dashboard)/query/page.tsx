@@ -292,14 +292,14 @@ export default function QueryPage() {
       {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Question List */}
-        <div className="space-y-4 lg:col-span-2">
+        <div className="space-y-6 lg:col-span-2">
           {questionsList.map((question) => (
             <QuestionCard key={question.id} {...question} />
           ))}
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className="hidden space-y-6 lg:block">
           {/* Stats Card */}
           <Card className="rounded-2xl border-none bg-card shadow-sm">
             <CardHeader className="pb-2">

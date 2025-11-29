@@ -1,6 +1,6 @@
 var R=require("../../../chunks/[turbopack]_runtime.js")("server/app/api/gemini/route.js")
-R.c("server/chunks/node_modules_7541a8c5._.js")
-R.c("server/chunks/[root-of-the-server]__1eda08b2._.js")
+R.c("server/chunks/node_modules_26fae1fb._.js")
+R.c("server/chunks/[root-of-the-server]__8c4a9454._.js")
 R.c("server/chunks/_next-internal_server_app_api_gemini_route_actions_52bfae22.js")
 R.m("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/gemini/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)")
 module.exports=R.m("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/app/api/gemini/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)").exports

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Home, Sparkles, HelpCircle, FileText, Search, Trophy, Settings, BookOpen, Map as MapIcon, Compass, MessageSquare, Users } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 const navigation = [
   { name: "Home", href: "/", icon: Home },
@@ -25,11 +26,15 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col bg-sidebar border-r border-border">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2 px-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md">
-          <Sparkles className="h-5 w-5 text-primary-foreground" />
+      {/* Logo */}
+      <div className="flex h-16 items-center justify-between px-6">
+        <div className="flex items-center gap-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md">
+            <Sparkles className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <span className="text-xl font-bold text-foreground">Mythics</span>
         </div>
-        <span className="text-xl font-bold text-foreground">Mythics</span>
+        <ThemeToggle />
       </div>
 
       {/* Navigation */}

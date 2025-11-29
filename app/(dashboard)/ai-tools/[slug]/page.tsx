@@ -85,16 +85,16 @@ const toolData: Record<
             { icon: Sparkles, label: "Analyze Sentiment" },
         ],
     },
-    "video-summarizer": {
-        name: "Video Summarizer",
-        description: "Get quick summaries and key points from video content.",
-        icon: Video,
-        placeholder: "Paste a video link or transcript to summarize...",
+    "notes-summarizer": {
+        name: "Notes Summarizer",
+        description: "Upload notes or paste text to get concise summaries and key insights.",
+        icon: FileText,
+        placeholder: "Paste your notes here or upload a document...",
         chips: [
-            { icon: Video, label: "Summarize Video" },
-            { icon: Search, label: "Extract Highlights" },
-            { icon: FileText, label: "Generate Transcript" },
-            { icon: Languages, label: "Translate Subtitles" },
+            { icon: FileText, label: "Summarize Notes" },
+            { icon: Search, label: "Extract Key Points" },
+            { icon: Sparkles, label: "Simplify Text" },
+            { icon: Languages, label: "Translate Notes" },
         ],
     },
     "ai-assistant": {
@@ -127,22 +127,35 @@ export default function ToolPage() {
     const Icon = tool.icon
 
     const handleGenerate = async () => {
-        if (!input.trim()) return
+        if (!input.trim() && !selectedFile) return
 
         setIsLoading(true)
         setOutput("")
 
         try {
-            const response = await fetch("/api/gemini", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    tool: slug,
-                    prompt: input,
-                }),
-            })
+            let response;
+            if (selectedFile) {
+                const formData = new FormData()
+                formData.append("tool", slug)
+                formData.append("prompt", input)
+                formData.append("file", selectedFile)
+
+                response = await fetch("/api/gemini", {
+                    method: "POST",
+                    body: formData,
+                })
+            } else {
+                response = await fetch("/api/gemini", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        tool: slug,
+                        prompt: input,
+                    }),
+                })
+            }
 
             const data = await response.json()
 
@@ -161,6 +174,31 @@ export default function ToolPage() {
 
     const handleChipClick = (label: string) => {
         setInput((prev) => (prev ? `${prev} ${label}` : label))
+    }
+
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        if (file.type === "application/pdf") {
+            setSelectedFile(file)
+            // Clear input if it was just a placeholder or previous file content
+            // But we might want to keep user's typed prompt.
+        } else {
+            // For non-PDFs, we can still read as text or treat as file.
+            // For now, let's treat text files as text input as before, or maybe just use file API for everything?
+            // The user specifically asked for PDF to be stored as PDF.
+            // Let's stick to the plan: PDF -> File API. Text -> Text Input (legacy behavior) or File API?
+            // Simpler to keep text files as text input for now unless requested otherwise.
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                const text = e.target?.result as string
+                setInput((prev) => (prev ? `${prev}\n\n${text}` : text))
+            }
+            reader.readAsText(file)
+        }
     }
 
     return (
@@ -199,12 +237,37 @@ export default function ToolPage() {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                         />
+                        {selectedFile && (
+                            <div className="mt-2 flex items-center gap-2 rounded-lg bg-muted px-3 py-2 text-sm">
+                                <FileText className="h-4 w-4 text-primary" />
+                                <span className="flex-1 truncate">{selectedFile.name}</span>
+                                <button
+                                    onClick={() => setSelectedFile(null)}
+                                    className="text-muted-foreground hover:text-foreground"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        )}
                     </div>
                     <div className="flex items-center justify-between">
-                        <Button variant="outline" className="gap-2 rounded-xl">
-                            <Terminal className="h-4 w-4" />
-                            Options
-                        </Button>
+                        <div className="relative">
+                            <input
+                                type="file"
+                                id="file-upload"
+                                className="hidden"
+                                accept=".txt,.md,.json,.csv,.pdf"
+                                onChange={handleFileUpload}
+                            />
+                            <Button
+                                variant="outline"
+                                className="gap-2 rounded-xl"
+                                onClick={() => document.getElementById("file-upload")?.click()}
+                            >
+                                <FileCode className="h-4 w-4" />
+                                Upload Document
+                            </Button>
+                        </div>
                         <Button
                             className="gap-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
                             onClick={handleGenerate}

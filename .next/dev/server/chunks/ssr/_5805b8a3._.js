@@ -739,7 +739,7 @@ function LostFoundPage() {
         };
         setItems(items.map((item)=>item.id === selectedItem.id ? {
                 ...item,
-                status: "claimed",
+                status: "pending",
                 claimTickets: [
                     ...item.claimTickets || [],
                     claimTicket
@@ -755,7 +755,7 @@ function LostFoundPage() {
     const stats = {
         found: {
             available: items.filter((i)=>i.type === "found" && i.status === "available").length,
-            claimed: items.filter((i)=>i.type === "found" && i.status === "claimed").length,
+            pending: items.filter((i)=>i.type === "found" && i.status === "pending").length,
             collected: items.filter((i)=>i.type === "found" && i.status === "collected").length
         },
         lost: {
@@ -766,7 +766,7 @@ function LostFoundPage() {
         switch(status){
             case "available":
                 return "bg-[#27C46B] text-white";
-            case "claimed":
+            case "pending":
                 return "bg-[#FFA146] text-white";
             case "collected":
                 return "bg-[#AAC4F5] text-white";
@@ -1399,7 +1399,7 @@ function LostFoundPage() {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-2xl font-bold text-foreground",
-                                        children: stats.found.claimed
+                                        children: stats.found.pending
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/lost-found/page.tsx",
                                         lineNumber: 478,
@@ -1407,7 +1407,7 @@ function LostFoundPage() {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-xs text-muted-foreground",
-                                        children: "Claimed"
+                                        children: "Pending"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/lost-found/page.tsx",
                                         lineNumber: 479,
@@ -1740,7 +1740,7 @@ function LostFoundPage() {
                                                         lineNumber: 571,
                                                         columnNumber: 25
                                                     }, this),
-                                                    item.status === "claimed" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    item.status === "pending" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "text-center text-sm text-muted-foreground",
                                                         children: "Claim pending review"
                                                     }, void 0, false, {

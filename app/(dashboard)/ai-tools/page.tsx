@@ -18,6 +18,7 @@ import {
   Music,
   Video,
   Bot,
+  FileText,
 } from "lucide-react"
 
 const categories = ["All", "Content", "Code", "Productivity", "Writing", "Design"]
@@ -58,11 +59,11 @@ const tools = [
   },
 
   {
-    name: "Video Summarizer",
-    description: "Get quick summaries and key points from video content.",
-    icon: Video,
-    category: "Content",
-    href: "/ai-tools/video-summarizer",
+    name: "Notes Summarizer",
+    description: "Upload notes or paste text to get concise summaries and key insights.",
+    icon: FileText,
+    category: "Productivity",
+    href: "/ai-tools/notes-summarizer",
   },
   {
     name: "AI Assistant",

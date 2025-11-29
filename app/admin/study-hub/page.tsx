@@ -20,7 +20,7 @@ export default function AdminStudyHubPage() {
                 </Button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {subjects.map((subject) => (
                     <Card key={subject} className="rounded-2xl border border-border bg-card shadow-md hover:shadow-lg transition-shadow">
                         <CardContent className="p-6">

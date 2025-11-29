@@ -17,12 +17,16 @@ export default function DashboardPage() {
         {/* Left Column - Announcements + Activity (stacked vertically) */}
         <div className="space-y-6 lg:col-span-2">
           <Announcements />
-          <ActivityHeatmap />
+          <div className="hidden lg:block">
+            <ActivityHeatmap />
+          </div>
         </div>
 
         {/* Right Column - Profile + Recent */}
         <div className="space-y-6">
-          <ProfileSummary />
+          <div className="hidden lg:block">
+            <ProfileSummary />
+          </div>
           <RecentActivity />
         </div>
       </div>

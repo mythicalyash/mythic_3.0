@@ -153,12 +153,12 @@ export default function AdminHomePage() {
                 <p className="text-muted-foreground">Manage student applications and platform</p>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-3 h-full min-h-0">
+            <div className="grid gap-6 lg:grid-cols-3 h-full min-h-0 grid-cols-1">
                 {/* Main Content - Student Applicants */}
                 <div className="lg:col-span-2 flex flex-col gap-6 h-full min-h-0">
                     {/* Search Filters */}
                     <Card className="rounded-2xl border-none bg-card shadow-sm shrink-0">
-                        <CardContent className="p-4 flex gap-4">
+                        <CardContent className="p-4 flex flex-col md:flex-row gap-4">
                             <div className="relative flex-1">
                                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
@@ -206,7 +206,7 @@ export default function AdminHomePage() {
                                                 </AvatarFallback>
                                             </Avatar>
 
-                                            <div className="flex-1 min-w-0 grid grid-cols-3 gap-4 items-center">
+                                            <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                                                 <div>
                                                     <h3 className="font-semibold text-foreground truncate">{applicant.name}</h3>
                                                     <p className="text-xs text-muted-foreground">Name</p>
@@ -247,7 +247,7 @@ export default function AdminHomePage() {
                 </div>
 
                 {/* Right Sidebar - Profile */}
-                <div className="space-y-6 h-full overflow-y-auto">
+                <div className="hidden lg:block space-y-6 h-full overflow-y-auto">
                     {/* Profile Card */}
                     <Card className="rounded-2xl border-none bg-card shadow-sm overflow-hidden">
                         <div className="h-24 bg-gradient-to-r from-[#0077C0]/30 via-[#C7EEFF]/50 to-secondary" />

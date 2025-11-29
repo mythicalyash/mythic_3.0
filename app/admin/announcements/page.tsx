@@ -83,7 +83,7 @@ export default function AnnouncementsPage() {
                 {announcements.map((announcement) => (
                     <Card key={announcement.id} className="rounded-2xl border border-border bg-card shadow-md">
                         <CardContent className="p-6">
-                            <div className="flex items-start gap-4">
+                            <div className="flex flex-col md:flex-row items-start gap-4">
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-500/10">
                                     <Megaphone className="h-6 w-6 text-orange-500" />
                                 </div>

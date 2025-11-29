@@ -26,143 +26,58 @@ const getActivityColor = (level: number) => {
 }
 
 export function ActivityHeatmap() {
-  const [view, setView] = useState<"monthly" | "weekly">("monthly")
-  const [activityData, setActivityData] = useState<number[][]>([])
+  const [yearData, setYearData] = useState<{ name: string; days: number[] }[]>([])
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setActivityData(generateActivityData())
+    const data = []
+    const currentYear = new Date().getFullYear()
+
+    for (let i = 0; i < 12; i++) {
+      const daysInMonth = new Date(currentYear, i + 1, 0).getDate()
+      const monthData = []
+      for (let d = 0; d < daysInMonth; d++) {
+        monthData.push(Math.floor(Math.random() * 5))
+      }
+      data.push({
+        name: months[i],
+        days: monthData
+      })
+    }
+
+    setYearData(data)
     setMounted(true)
   }, [])
 
-  // Prevent hydration mismatch by not rendering until client-side
-  if (!mounted) {
-    return (
-      <Card className="rounded-2xl border-none bg-card shadow-sm">
-        <CardHeader className="flex flex-row items-center justify-between pb-3">
-          <CardTitle className="text-xl font-bold text-foreground">Activity</CardTitle>
-          <div className="flex gap-1 rounded-lg bg-muted p-1">
-            <Button
-              variant="default"
-              size="sm"
-              className="rounded-md px-4 py-1.5 text-sm bg-primary text-primary-foreground"
-            >
-              Monthly
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-md px-4 py-1.5 text-sm"
-            >
-              Weekly
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-4">
-          <div className="mb-2 flex pl-10">
-            {months.map((month, i) => (
-              <span
-                key={month}
-                className="flex-1 text-center text-sm text-muted-foreground"
-                style={{ display: i % 2 === 0 ? "block" : "none" }}
-              >
-                {month}
-              </span>
-            ))}
-          </div>
-          <div className="flex gap-3">
-            <div className="flex flex-col justify-around py-1">
-              {days.map((day) => (
-                <span key={day} className="text-sm text-muted-foreground">
-                  {day}
-                </span>
-              ))}
-            </div>
-            <div className="flex flex-1 gap-[3px] overflow-hidden">
-              {/* Empty placeholder during SSR */}
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-end gap-2">
-            <span className="text-sm text-muted-foreground">Less</span>
-            {[0, 1, 2, 3, 4].map((level) => (
-              <div key={level} className={`h-3.5 w-3.5 rounded-[4px] ${getActivityColor(level)}`} />
-            ))}
-            <span className="text-sm text-muted-foreground">More</span>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
-
+  if (!mounted) return null
 
   return (
     <Card className="rounded-2xl border-none bg-card shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
+      <CardHeader className="pb-3">
         <CardTitle className="text-xl font-bold text-foreground">Activity</CardTitle>
-        <div className="flex gap-1 rounded-lg bg-muted p-1">
-          <Button
-            variant={view === "monthly" ? "default" : "ghost"}
-            size="sm"
-            className={`rounded-md px-4 py-1.5 text-sm ${view === "monthly" ? "bg-primary text-primary-foreground" : ""}`}
-            onClick={() => setView("monthly")}
-          >
-            Monthly
-          </Button>
-          <Button
-            variant={view === "weekly" ? "default" : "ghost"}
-            size="sm"
-            className={`rounded-md px-4 py-1.5 text-sm ${view === "weekly" ? "bg-primary text-primary-foreground" : ""}`}
-            onClick={() => setView("weekly")}
-          >
-            Weekly
-          </Button>
-        </div>
       </CardHeader>
-      <CardContent className="pt-4">
-        {/* Month labels */}
-        <div className="mb-2 flex pl-10">
-          {months.map((month, i) => (
-            <span
-              key={month}
-              className="flex-1 text-center text-sm text-muted-foreground"
-              style={{ display: i % 2 === 0 ? "block" : "none" }}
-            >
-              {month}
-            </span>
-          ))}
-        </div>
-
-        <div className="flex gap-3">
-          {/* Day labels */}
-          <div className="flex flex-col justify-around py-1">
-            {days.map((day) => (
-              <span key={day} className="text-sm text-muted-foreground">
-                {day}
-              </span>
-            ))}
-          </div>
-
-          {/* Heatmap grid */}
-          <div className="flex flex-1 gap-[3px] overflow-hidden">
-            {activityData.slice(0, view === "weekly" ? 12 : 52).map((week, weekIndex) => (
-              <div key={weekIndex} className="flex flex-col gap-[3px]">
-                {week.map((activity, dayIndex) => (
+      <CardContent>
+        <div className="flex w-full items-end justify-between gap-2 overflow-x-auto pb-2">
+          {yearData.map((month) => (
+            <div key={month.name} className="flex flex-col gap-2">
+              <div className="grid grid-rows-7 grid-flow-col gap-1">
+                {month.days.map((level, i) => (
                   <div
-                    key={dayIndex}
-                    className={`h-3.5 w-3.5 rounded-[4px] ${getActivityColor(activity)} transition-colors hover:ring-2 hover:ring-primary/50`}
-                    title={`${activity} contributions`}
+                    key={i}
+                    className={`h-2.5 w-2.5 rounded-[2px] ${getActivityColor(level)} transition-all hover:scale-125 hover:ring-1 hover:ring-primary/50`}
+                    title={`${month.name} ${i + 1}: ${level} contributions`}
                   />
                 ))}
               </div>
-            ))}
-          </div>
+              <span className="text-xs font-medium text-muted-foreground text-center">{month.name}</span>
+            </div>
+          ))}
         </div>
 
-        {/* Legend */}
         <div className="mt-4 flex items-center justify-end gap-2">
           <span className="text-sm text-muted-foreground">Less</span>
           {[0, 1, 2, 3, 4].map((level) => (
-            <div key={level} className={`h-3.5 w-3.5 rounded-[4px] ${getActivityColor(level)}`} />
+            <div key={level} className={`h-3 w-3 rounded-sm ${getActivityColor(level)}`} />
           ))}
           <span className="text-sm text-muted-foreground">More</span>
         </div>

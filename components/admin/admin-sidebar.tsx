@@ -12,8 +12,12 @@ import {
     Settings,
     Sparkles,
     Search,
+    Menu,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 
 const navigation = [
     { name: "Admin Home", href: "/admin", icon: Home },
@@ -25,17 +29,20 @@ const navigation = [
     { name: "Leaderboard", href: "/admin/leaderboard", icon: Trophy },
 ]
 
-export function AdminSidebar() {
+function SidebarContent() {
     const pathname = usePathname()
 
     return (
-        <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col bg-sidebar border-r border-border">
+        <div className="flex h-full flex-col">
             {/* Logo */}
-            <div className="flex h-16 items-center gap-2 px-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md">
-                    <Sparkles className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-16 items-center justify-between px-6">
+                <div className="flex items-center gap-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md">
+                        <Sparkles className="h-5 w-5 text-primary-foreground" />
+                    </div>
+                    <span className="text-xl font-bold text-foreground">Admin Panel</span>
                 </div>
-                <span className="text-xl font-bold text-foreground">Admin Panel</span>
+                <ThemeToggle />
             </div>
 
             {/* Navigation */}
@@ -87,6 +94,31 @@ export function AdminSidebar() {
                     </Link>
                 </div>
             </div>
+        </div>
+    )
+}
+
+export function AdminSidebar() {
+    return (
+        <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-sidebar border-r border-border">
+            <SidebarContent />
         </aside>
+    )
+}
+
+export function MobileAdminSidebar() {
+    return (
+        <Sheet>
+            <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Toggle sidebar</span>
+                </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 p-0 bg-sidebar border-r border-border">
+                <SheetTitle className="sr-only">Admin Navigation</SheetTitle>
+                <SidebarContent />
+            </SheetContent>
+        </Sheet>
     )
 }
