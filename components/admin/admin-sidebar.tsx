@@ -11,6 +11,7 @@ import {
     Trophy,
     Settings,
     Sparkles,
+    Search,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
@@ -19,6 +20,7 @@ const navigation = [
     { name: "Admin Query", href: "/admin/query", icon: MessageSquare },
     { name: "Announcements", href: "/admin/announcements", icon: Megaphone },
     { name: "Admin Study Hub", href: "/admin/study-hub", icon: BookOpen },
+    { name: "Lost & Found", href: "/admin/lost-found", icon: Search },
     { name: "Feedback Review", href: "/admin/feedback", icon: MessageCircle },
     { name: "Leaderboard", href: "/admin/leaderboard", icon: Trophy },
 ]

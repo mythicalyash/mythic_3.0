@@ -1,12 +1,39 @@
 "use client"
 
 import { useState } from "react"
+import {
+  Book,
+  FileText,
+  Files,
+  BrainCircuit,
+  HelpCircle,
+  ChevronDown,
+  BookOpen,
+  Code2,
+  Database,
+  Layout,
+  Cpu,
+  Globe,
+  Network,
+  Plus,
+  Search,
+  TrendingUp,
+  Clock,
+  X,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { QuestionCard } from "@/components/query/question-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, Plus, TrendingUp, HelpCircle, Clock } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 const tabs = ["Newest", "Active", "Unanswered", "Frequent"]
 const filterTags = ["javascript", "typescript", "react", "nextjs", "css", "node", "python", "database"]
@@ -90,9 +117,46 @@ const trendingTags = [
 export default function QueryPage() {
   const [activeTab, setActiveTab] = useState("Newest")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [queryTitle, setQueryTitle] = useState("")
+  const [queryDescription, setQueryDescription] = useState("")
+  const [queryTags, setQueryTags] = useState("")
+  const [questionsList, setQuestionsList] = useState(questions)
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
+  }
+
+  const handleSubmitQuery = () => {
+    // Parse tags from comma-separated string
+    const tagsArray = queryTags
+      .split(",")
+      .map((tag) => tag.trim().toLowerCase())
+      .filter((tag) => tag.length > 0)
+      .slice(0, 5) // Limit to 5 tags
+
+    // Create new question object
+    const newQuestion = {
+      id: `${questionsList.length + 1}`,
+      title: queryTitle,
+      summary: queryDescription,
+      author: { name: "John Doe", avatar: "/placeholder.svg?key=john", initials: "JD" },
+      tags: tagsArray,
+      votes: 0,
+      answers: 0,
+      views: 0,
+      hasAcceptedAnswer: false,
+      createdAt: "Just now",
+    }
+
+    // Add new question to the beginning of the list
+    setQuestionsList([newQuestion, ...questionsList])
+
+    // Reset form
+    setQueryTitle("")
+    setQueryDescription("")
+    setQueryTags("")
+    setIsDialogOpen(false)
   }
 
   return (
@@ -103,11 +167,83 @@ export default function QueryPage() {
           <h1 className="text-2xl font-bold text-foreground">Query</h1>
           <p className="text-muted-foreground">Ask questions and get answers from the community</p>
         </div>
-        <Button className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md">
+        <Button
+          onClick={() => setIsDialogOpen(true)}
+          className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
+        >
           <Plus className="mr-2 h-4 w-4" />
           Ask Question
         </Button>
       </div>
+
+      {/* Ask Question Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Ask a Question</DialogTitle>
+            <DialogDescription>
+              Share your question with the community and get helpful answers.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="title" className="text-sm font-medium text-foreground">
+                Question Title
+              </label>
+              <Input
+                id="title"
+                placeholder="e.g., How do I center a div in CSS?"
+                value={queryTitle}
+                onChange={(e) => setQueryTitle(e.target.value)}
+                className="rounded-xl"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="description" className="text-sm font-medium text-foreground">
+                Description
+              </label>
+              <Textarea
+                id="description"
+                placeholder="Provide more details about your question..."
+                value={queryDescription}
+                onChange={(e) => setQueryDescription(e.target.value)}
+                className="min-h-[150px] rounded-xl resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="tags" className="text-sm font-medium text-foreground">
+                Tags
+              </label>
+              <Input
+                id="tags"
+                placeholder="e.g., javascript, react, css (comma separated)"
+                value={queryTags}
+                onChange={(e) => setQueryTags(e.target.value)}
+                className="rounded-xl"
+              />
+              <p className="text-xs text-muted-foreground">
+                Add up to 5 tags to help others find your question
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setIsDialogOpen(false)}
+              className="rounded-xl"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmitQuery}
+              disabled={!queryTitle.trim() || !queryDescription.trim()}
+              className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Post Question
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Search */}
       <div className="relative">
@@ -125,11 +261,10 @@ export default function QueryPage() {
           <Button
             key={tab}
             variant={activeTab === tab ? "default" : "ghost"}
-            className={`rounded-xl px-4 whitespace-nowrap ${
-              activeTab === tab
-                ? "bg-primary text-primary-foreground shadow-md"
-                : "bg-card hover:bg-muted text-foreground"
-            }`}
+            className={`rounded-xl px-4 whitespace-nowrap ${activeTab === tab
+              ? "bg-primary text-primary-foreground shadow-md"
+              : "bg-card hover:bg-muted text-foreground"
+              }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab}
@@ -143,11 +278,10 @@ export default function QueryPage() {
           <Badge
             key={tag}
             variant="secondary"
-            className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-all ${
-              selectedTags.includes(tag)
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground hover:bg-primary/20"
-            }`}
+            className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-all ${selectedTags.includes(tag)
+              ? "bg-primary text-primary-foreground"
+              : "bg-secondary text-secondary-foreground hover:bg-primary/20"
+              }`}
             onClick={() => toggleTag(tag)}
           >
             {tag}
@@ -159,7 +293,7 @@ export default function QueryPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Question List */}
         <div className="space-y-4 lg:col-span-2">
-          {questions.map((question) => (
+          {questionsList.map((question) => (
             <QuestionCard key={question.id} {...question} />
           ))}
         </div>

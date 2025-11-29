@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Home, Sparkles, HelpCircle, FileText, Search, Trophy, Settings, BookOpen, Map as MapIcon, Compass, MessageSquare } from "lucide-react"
+import { Home, Sparkles, HelpCircle, FileText, Search, Trophy, Settings, BookOpen, Map as MapIcon, Compass, MessageSquare, Users } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const navigation = [
@@ -13,6 +13,7 @@ const navigation = [
   { name: "AI Tools", href: "/ai-tools", icon: Sparkles },
   { name: "Query", href: "/query", icon: HelpCircle },
   { name: "Study Hub", href: "/study-hub", icon: BookOpen },
+  { name: "Clubs & Community", href: "/clubs", icon: Users },
   { name: "Lost & Found", href: "/lost-found", icon: Search },
   { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
   { name: "Feedback", href: "/feedback", icon: MessageSquare },
