@@ -1,0 +1,54 @@
+import connectDB from "@/db/connectDB";
+connectDB();
+
+import User from "@/models/user.model";
+import { ApiError } from "@/utils/ApiError";
+import { NextRequest } from "next/server";
+import bcrypt from "bcrypt";
+import { ApiResponse } from "@/utils/ApiResponse";
+import { createClient } from "redis";
+import { randomBytes } from "crypto";
+import { sendMail } from "@/utils/mailer";
+
+export const POST = async (req: NextRequest) => {
+    const redisClient = createClient();
+    await redisClient.connect();
+
+    const { firstName, lastName, email, password, collegeId } = await req.json();
+
+    if(!firstName || !email || !password || !collegeId){
+        return ApiError(400, "Bad request");
+    }
+
+    const existingUser = await User.findOne({
+        email
+    });
+
+    if(existingUser){
+        return ApiError(409, "User already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const emailVerificationToken = randomBytes(16).toString('hex');
+
+    await sendMail(email, "email", emailVerificationToken);
+
+    await redisClient.hSet(`users:signup:${emailVerificationToken}`, {
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        collegeId
+    });
+    
+    const tempInfo = await redisClient.hGetAll(`users:signup:${emailVerificationToken}`);
+    await redisClient.expire(`users:signup:${emailVerificationToken}`, 600);
+
+    if(!tempInfo){
+        return ApiError(500, "Error while storing user info temporarily");
+    }
+
+    delete tempInfo["password"];
+
+    return ApiResponse(201, "User created successfully", tempInfo);
+}

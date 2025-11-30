@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/middleware.ts"],"sourcesContent":["import { getToken } from \"next-auth/jwt\";\nimport { MiddlewareConfig, NextRequest, NextResponse } from \"next/server\";\n\nexport async function middleware(req: NextRequest) {\n    const token = await getToken({ req });\n    const url = req.nextUrl;\n    \n    if(token && url.pathname.startsWith('/auth')){\n        return NextResponse.redirect(new URL('/', req.url));\n    } else if(!token && !url.pathname.startsWith('/auth')){\n        return NextResponse.redirect(new URL('/auth', req.url));\n    }\n}\n\nexport const config: MiddlewareConfig = {\n    matcher: [\n        '/',\n        '/auth',\n    ],\n}"],"names":[],"mappings":";;;;;;AAAA;AACA;AAAA;;;AAEO,eAAe,WAAW,GAAgB;IAC7C,MAAM,QAAQ,MAAM,IAAA,gKAAQ,EAAC;QAAE;IAAI;IACnC,MAAM,MAAM,IAAI,OAAO;IAEvB,IAAG,SAAS,IAAI,QAAQ,CAAC,UAAU,CAAC,UAAS;QACzC,OAAO,gMAAY,CAAC,QAAQ,CAAC,IAAI,IAAI,KAAK,IAAI,GAAG;IACrD,OAAO,IAAG,CAAC,SAAS,CAAC,IAAI,QAAQ,CAAC,UAAU,CAAC,UAAS;QAClD,OAAO,gMAAY,CAAC,QAAQ,CAAC,IAAI,IAAI,SAAS,IAAI,GAAG;IACzD;AACJ;AAEO,MAAM,SAA2B;IACpC,SAAS;QACL;QACA;KACH;AACL"}}]
+}

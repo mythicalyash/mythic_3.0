@@ -1,7 +1,5 @@
 {
-  "/(dashboard)/ai-tools/page": "app/(dashboard)/ai-tools/page.js",
-  "/(dashboard)/campus-map/page": "app/(dashboard)/campus-map/page.js",
-  "/(dashboard)/nearby/page": "app/(dashboard)/nearby/page.js",
-  "/(dashboard)/page": "app/(dashboard)/page.js",
-  "/api/announcements/route": "app/api/announcements/route.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/api/v1/colleges/get-all-colleges/route": "app/api/v1/colleges/get-all-colleges/route.js",
+  "/auth/page": "app/auth/page.js"
 }
