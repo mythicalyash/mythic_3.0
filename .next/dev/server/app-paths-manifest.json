@@ -1,24 +1,7 @@
 {
-  "/(dashboard)/ai-tools/[slug]/page": "app/(dashboard)/ai-tools/[slug]/page.js",
   "/(dashboard)/ai-tools/page": "app/(dashboard)/ai-tools/page.js",
   "/(dashboard)/campus-map/page": "app/(dashboard)/campus-map/page.js",
-  "/(dashboard)/clubs/page": "app/(dashboard)/clubs/page.js",
-  "/(dashboard)/feedback/page": "app/(dashboard)/feedback/page.js",
-  "/(dashboard)/leaderboard/page": "app/(dashboard)/leaderboard/page.js",
-  "/(dashboard)/lost-found/page": "app/(dashboard)/lost-found/page.js",
   "/(dashboard)/nearby/page": "app/(dashboard)/nearby/page.js",
   "/(dashboard)/page": "app/(dashboard)/page.js",
-  "/(dashboard)/query/page": "app/(dashboard)/query/page.js",
-  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js",
-  "/(dashboard)/study-hub/page": "app/(dashboard)/study-hub/page.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/admin/announcements/page": "app/admin/announcements/page.js",
-  "/admin/feedback/page": "app/admin/feedback/page.js",
-  "/admin/leaderboard/page": "app/admin/leaderboard/page.js",
-  "/admin/lost-found/page": "app/admin/lost-found/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/admin/query/page": "app/admin/query/page.js",
-  "/admin/study-hub/page": "app/admin/study-hub/page.js",
-  "/api/announcements/route": "app/api/announcements/route.js",
-  "/api/study-hub/route": "app/api/study-hub/route.js"
+  "/api/announcements/route": "app/api/announcements/route.js"
 }
