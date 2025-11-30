@@ -1,31 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import type React from "react"
 import { Mail, Lock, Eye, EyeOff, User, CheckCircle, X, AlertCircle } from "lucide-react"
 import axios from "axios";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-let colleges: [{
-    _id: string;
-    name: string
-}];
-colleges = [{
-    _id: "",
-    name: "Select a college"
-}];
-
-const fetchColleges = async () => {
-    await axios.get("/api/v1/colleges/get-all-colleges")
-    .then((res) => {
-        colleges.push(...res.data?.data)
-    });
-}
-fetchColleges()
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [colleges, setColleges] = useState([{ _id: "", name: "Select a college" }]);
   const [isSignUp, setIsSignUp] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -33,6 +19,18 @@ export default function LoginPage() {
   const [verificationEmail, setVerificationEmail] = useState("")
   const [passwordError, setPasswordError] = useState(false);
   const [collegeError, setCollegeError] = useState(false);
+
+  useEffect(() => {
+    const fetchColleges = async () => {
+      try {
+        const res = await axios.get("/api/v1/colleges/get-all-colleges");
+        setColleges((prev) => [...prev, ...res.data?.data]);
+      } catch (error) {
+        console.error("Failed to fetch colleges", error);
+      }
+    }
+    fetchColleges();
+  }, []);
 
   const [signInData, setSignInData] = useState({
     email: "",
@@ -51,6 +49,7 @@ export default function LoginPage() {
     password: "",
     confirmPassword: "",
   })
+  const [signUpError, setSignUpError] = useState("");
 
   const handleSignInChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -63,7 +62,7 @@ export default function LoginPage() {
       [name]: ""
     }))
   }
-  
+
   const handleSignInSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const result = await signIn('credentials', {
@@ -73,16 +72,16 @@ export default function LoginPage() {
     });
     console.log(result);
 
-    if(result?.error){
-      if(result.error == "Error while logging in the user: Error: No user found!"){
+    if (result?.error) {
+      if (result.error == "Error while logging in the user: Error: No user found!") {
         setSignInErrors((prev) => ({
-            ...prev,
-            email: "No user found"
+          ...prev,
+          email: "No user found"
         }));
-      } else if(result.error == "Error while logging in the user: Incorrect password!"){
+      } else if (result.error == "Error while logging in the user: Incorrect password!") {
         setSignInErrors((prev) => ({
-            ...prev,
-            password: "Incorrect password"
+          ...prev,
+          password: "Incorrect password"
         }));
       }
       else {
@@ -90,8 +89,8 @@ export default function LoginPage() {
       }
     }
 
-    if(result?.url){
-      redirect('/');
+    if (result?.ok) {
+      router.push('/');
     }
   }
 
@@ -104,9 +103,10 @@ export default function LoginPage() {
     if (name === "password" || name === "confirmPassword") {
       setPasswordError(false)
     }
-    if(name === "collegeName"){
-        setCollegeError(false);
+    if (name === "collegeName") {
+      setCollegeError(false);
     }
+    setSignUpError("");
   }
 
   const handleSignUpSubmit = async (e: React.FormEvent) => {
@@ -115,20 +115,29 @@ export default function LoginPage() {
       setPasswordError(true)
       return
     }
-    if(signUpData.collegeName == "Select a college"){
-        setCollegeError(true);
-        return;
+    if (signUpData.collegeName == "Select a college") {
+      setCollegeError(true);
+      return;
     }
-    await axios.post("/api/v1/users/signup", {
+    try {
+      await axios.post("/api/v1/users/signup", {
         "firstName": signUpData.firstName,
         "lastName": signUpData.lastName,
         "email": signUpData.email,
         "password": signUpData.password,
         "collegeId": colleges.filter((college) => college.name == signUpData.collegeName)[0]._id
-    });
-    setVerificationEmail(signUpData.email)
-    setShowVerificationModal(true)
-    console.log("Sign up attempt:", signUpData)
+      });
+      setVerificationEmail(signUpData.email)
+      setShowVerificationModal(true)
+      console.log("Sign up attempt:", signUpData)
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        setSignUpError("User already exists. Please sign in.");
+      } else {
+        setSignUpError("An error occurred during sign up. Please try again.");
+        console.error("Signup error:", error);
+      }
+    }
   }
 
   const handleCloseVerificationModal = () => {
@@ -175,8 +184,8 @@ export default function LoginPage() {
                       </div>
                       {signInErrors.email && (
                         <div className="flex items-center gap-2 mt-2 text-red-600">
-                            <AlertCircle size={16} />
-                            <p className="text-xs sm:text-sm font-medium">{signInErrors.email}</p>
+                          <AlertCircle size={16} />
+                          <p className="text-xs sm:text-sm font-medium">{signInErrors.email}</p>
                         </div>
                       )}
                     </div>
@@ -290,46 +299,46 @@ export default function LoginPage() {
 
                     <div>
 
-                        <div>
-                            
-                            <div className="relative">
-                            <select
-                                name="collegeName"
-                                value={signUpData.collegeName}
-                                onChange={handleSignUpChange}
-                                className="w-full pl-4 pr-4 py-2.5 sm:py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:outline-none focus:border-indigo-500 focus:ring-0 transition-colors text-gray-900 text-sm sm:text-base appearance-none cursor-pointer"
-                                required
-                            >
-                                {colleges.map((college) => (
-                                <option key={college._id} value={college.name}>
-                                    {college.name}
-                                </option>
-                                ))}
-                            </select>
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                                />
-                                </svg>
-                            </div>
-                            </div>
-                            {passwordError && (
-                                <div className="flex items-center gap-2 mt-2 text-red-600">
-                                    <AlertCircle size={16} />
-                                    <p className="text-xs sm:text-sm font-medium">Select a college</p>
-                                </div>
-                            )}
+                      <div>
+
+                        <div className="relative">
+                          <select
+                            name="collegeName"
+                            value={signUpData.collegeName}
+                            onChange={handleSignUpChange}
+                            className="w-full pl-4 pr-4 py-2.5 sm:py-3 bg-gray-50 border-2 border-gray-200 rounded-full focus:outline-none focus:border-indigo-500 focus:ring-0 transition-colors text-gray-900 text-sm sm:text-base appearance-none cursor-pointer"
+                            required
+                          >
+                            {colleges.map((college) => (
+                              <option key={college._id} value={college.name}>
+                                {college.name}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                              />
+                            </svg>
+                          </div>
                         </div>
-                        {collegeError && (
-                            <div className="flex items-center gap-2 mt-2 text-red-600">
-                                <AlertCircle size={16} />
-                                <p className="text-xs sm:text-sm font-medium">Select a college</p>
-                            </div>
+                        {passwordError && (
+                          <div className="flex items-center gap-2 mt-2 text-red-600">
+                            <AlertCircle size={16} />
+                            <p className="text-xs sm:text-sm font-medium">Select a college</p>
+                          </div>
                         )}
+                      </div>
+                      {collegeError && (
+                        <div className="flex items-center gap-2 mt-2 text-red-600">
+                          <AlertCircle size={16} />
+                          <p className="text-xs sm:text-sm font-medium">Select a college</p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="relative">
@@ -365,11 +374,10 @@ export default function LoginPage() {
                           placeholder="Confirm Password"
                           value={signUpData.confirmPassword}
                           onChange={handleSignUpChange}
-                          className={`w-full pl-12 pr-12 py-2.5 sm:py-3 bg-gray-50 rounded-full focus:outline-none focus:ring-0 transition-colors text-gray-900 placeholder:text-gray-500 border-2 text-sm sm:text-base ${
-                            passwordError
-                              ? "border-red-500 focus:border-red-600"
-                              : "border-gray-200 focus:border-indigo-500"
-                          }`}
+                          className={`w-full pl-12 pr-12 py-2.5 sm:py-3 bg-gray-50 rounded-full focus:outline-none focus:ring-0 transition-colors text-gray-900 placeholder:text-gray-500 border-2 text-sm sm:text-base ${passwordError
+                            ? "border-red-500 focus:border-red-600"
+                            : "border-gray-200 focus:border-indigo-500"
+                            }`}
                           required
                         />
                         <button
@@ -387,6 +395,15 @@ export default function LoginPage() {
                         </div>
                       )}
                     </div>
+
+
+
+                    {signUpError && (
+                      <div className="flex items-center gap-2 mt-2 text-red-600 justify-center">
+                        <AlertCircle size={16} />
+                        <p className="text-xs sm:text-sm font-medium">{signUpError}</p>
+                      </div>
+                    )}
 
                     <button
                       type="submit"
@@ -422,7 +439,7 @@ export default function LoginPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       {showVerificationModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -472,7 +489,8 @@ export default function LoginPage() {
             </div>
           </div>
         </div>
-      )}
+      )
+      }
 
       <style jsx>{`
         @keyframes fadeIn {
@@ -489,6 +507,6 @@ export default function LoginPage() {
           animation: fadeIn 0.3s ease-out;
         }
       `}</style>
-    </div>
+    </div >
   )
 }

@@ -1,5 +1,15 @@
 {
+  "/(dashboard)/page": "app/(dashboard)/page.js",
+  "/(dashboard)/query/[id]/page": "app/(dashboard)/query/[id]/page.js",
+  "/(dashboard)/query/page": "app/(dashboard)/query/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/announcements/page": "app/admin/announcements/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/announcements/route": "app/api/announcements/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/api/v1/colleges/get-all-colleges/route": "app/api/v1/colleges/get-all-colleges/route.js",
-  "/auth/page": "app/auth/page.js"
+  "/api/v1/users/signup/route": "app/api/v1/users/signup/route.js",
+  "/api/v1/users/verify-email/route": "app/api/v1/users/verify-email/route.js",
+  "/auth/page": "app/auth/page.js",
+  "/verify-email/page": "app/verify-email/page.js"
 }
