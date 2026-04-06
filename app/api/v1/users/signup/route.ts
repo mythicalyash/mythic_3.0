@@ -12,7 +12,9 @@ import { sendMail } from "@/utils/mailer";
 
 export const POST = async (req: NextRequest) => {
     try {
-        const redisClient = createClient();
+        const redisClient = createClient({
+            url: process.env.REDIS_URL || 'redis://localhost:6379'
+        });
         await redisClient.connect();
 
         const { firstName, lastName, email, password, collegeId } = await req.json();

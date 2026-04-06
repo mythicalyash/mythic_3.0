@@ -9,7 +9,9 @@ import { NextRequest } from "next/server";
 import { createClient } from "redis";
 
 export const POST = async (req: NextRequest) => {
-    const redisClient = createClient();
+    const redisClient = createClient({
+        url: process.env.REDIS_URL || 'redis://localhost:6379'
+    });
     await redisClient.connect();
 
     const {token}: {token: string} = await req.json();
