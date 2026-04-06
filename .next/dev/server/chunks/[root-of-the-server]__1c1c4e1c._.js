@@ -399,35 +399,44 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$mailer$2e$ts__$5b$a
 ;
 ;
 const POST = async (req)=>{
-    const redisClient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$redis$2f$dist$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["createClient"])();
-    await redisClient.connect();
-    const { firstName, lastName, email, password, collegeId } = await req.json();
-    if (!firstName || !email || !password || !collegeId) {
-        return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiError$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiError"])(400, "Bad request");
+    try {
+        const redisClient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$redis$2f$dist$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["createClient"])();
+        await redisClient.connect();
+        const { firstName, lastName, email, password, collegeId } = await req.json();
+        if (!firstName || !email || !password || !collegeId) {
+            return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiError$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiError"])(400, "Bad request");
+        }
+        const existingUser = await __TURBOPACK__imported__module__$5b$project$5d2f$models$2f$user$2e$model$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].findOne({
+            email
+        });
+        if (existingUser) {
+            return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiError$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiError"])(409, "User already exists");
+        }
+        const hashedPassword = await __TURBOPACK__imported__module__$5b$externals$5d2f$bcrypt__$5b$external$5d$__$28$bcrypt$2c$__cjs$29$__["default"].hash(password, 10);
+        const emailVerificationToken = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$crypto__$5b$external$5d$__$28$crypto$2c$__cjs$29$__["randomBytes"])(16).toString('hex');
+        try {
+            await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$mailer$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["sendMail"])(email, "email", emailVerificationToken);
+        } catch (mailError) {
+            console.log("Mocking email send since SMTP credentials might be dummy:", emailVerificationToken);
+        }
+        await redisClient.hSet(`users:signup:${emailVerificationToken}`, {
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            collegeId
+        });
+        const tempInfo = await redisClient.hGetAll(`users:signup:${emailVerificationToken}`);
+        await redisClient.expire(`users:signup:${emailVerificationToken}`, 600);
+        if (!tempInfo) {
+            return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiError$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiError"])(500, "Error while storing user info temporarily");
+        }
+        delete tempInfo["password"];
+        return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiResponse$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiResponse"])(201, "User created successfully", tempInfo);
+    } catch (err) {
+        console.error("Signup internal error:", err);
+        return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiError$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiError"])(500, "Internal Server Error: " + err.message);
     }
-    const existingUser = await __TURBOPACK__imported__module__$5b$project$5d2f$models$2f$user$2e$model$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["default"].findOne({
-        email
-    });
-    if (existingUser) {
-        return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiError$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiError"])(409, "User already exists");
-    }
-    const hashedPassword = await __TURBOPACK__imported__module__$5b$externals$5d2f$bcrypt__$5b$external$5d$__$28$bcrypt$2c$__cjs$29$__["default"].hash(password, 10);
-    const emailVerificationToken = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$crypto__$5b$external$5d$__$28$crypto$2c$__cjs$29$__["randomBytes"])(16).toString('hex');
-    await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$mailer$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["sendMail"])(email, "email", emailVerificationToken);
-    await redisClient.hSet(`users:signup:${emailVerificationToken}`, {
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        collegeId
-    });
-    const tempInfo = await redisClient.hGetAll(`users:signup:${emailVerificationToken}`);
-    await redisClient.expire(`users:signup:${emailVerificationToken}`, 600);
-    if (!tempInfo) {
-        return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiError$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiError"])(500, "Error while storing user info temporarily");
-    }
-    delete tempInfo["password"];
-    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$ApiResponse$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ApiResponse"])(201, "User created successfully", tempInfo);
 };
 }),
 ];

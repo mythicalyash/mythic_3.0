@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/admin/layout,_N_T_/admin/lost-found/layout,_N_T_/admin/lost-found/page,_N_T_/admin/lost-found"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/admin/lost-found/__PAGE__",
+    "/admin/lost-found",
+    "/admin",
+    "/_index",
+    "/_head"
+  ]
+}

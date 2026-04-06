@@ -4,7 +4,9 @@ import { useEffect, useState } from "react"
 import { redirect, useSearchParams } from "next/navigation"
 import axios from "axios";
 
-export default function VerifyEmailPage() {
+import { Suspense } from "react"
+
+function VerifyEmailContent() {
   const searchParams = useSearchParams()
   const token = searchParams.get("token");
   if(!token?.trim()){
@@ -54,7 +56,7 @@ export default function VerifyEmailPage() {
               </p>
               <a
                 href="/auth"
-                className="px-12 py-4 bg-linear-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg italic inline-block"
+                className="px-12 py-4 bg-linear-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg inline-block"
               >
                 Back to Login
               </a>
@@ -63,5 +65,13 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   )
 }

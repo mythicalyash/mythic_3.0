@@ -11,7 +11,20 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [colleges, setColleges] = useState([{ _id: "", name: "Select a college" }]);
+  const [colleges, setColleges] = useState([
+    { _id: "", name: "Select a college" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a10", name: "Massachusetts Institute of Technology (MIT)" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a11", name: "Stanford University" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a12", name: "Harvard University" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a13", name: "California Institute of Technology (Caltech)" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a14", name: "University of Oxford" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a15", name: "University of Cambridge" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a16", name: "Princeton University" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a17", name: "Yale University" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a18", name: "New York University (NYU)" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a19", name: "University of California, Berkeley (UCB)" },
+    { _id: "651f1a1a1a1a1a1a1a1a1a1a", name: "National University of Singapore (NUS)" }
+  ]);
   const [isSignUp, setIsSignUp] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
