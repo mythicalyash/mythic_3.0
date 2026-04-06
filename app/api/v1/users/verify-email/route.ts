@@ -6,13 +6,9 @@ import { ApiError } from "@/utils/ApiError";
 import { ApiResponse } from "@/utils/ApiResponse";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
-import { createClient } from "redis";
+import redisClient from "@/lib/redis";
 
 export const POST = async (req: NextRequest) => {
-    const redisClient = createClient({
-        url: process.env.REDIS_URL || 'redis://localhost:6379'
-    });
-    await redisClient.connect();
 
     const {token}: {token: string} = await req.json();
 

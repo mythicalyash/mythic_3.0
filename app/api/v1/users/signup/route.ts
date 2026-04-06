@@ -6,16 +6,12 @@ import { ApiError } from "@/utils/ApiError";
 import { NextRequest } from "next/server";
 import bcrypt from "bcrypt";
 import { ApiResponse } from "@/utils/ApiResponse";
-import { createClient } from "redis";
+import redisClient from "@/lib/redis";
 import { randomBytes } from "crypto";
 import { sendMail } from "@/utils/mailer";
 
 export const POST = async (req: NextRequest) => {
     try {
-        const redisClient = createClient({
-            url: process.env.REDIS_URL || 'redis://localhost:6379'
-        });
-        await redisClient.connect();
 
         const { firstName, lastName, email, password, collegeId } = await req.json();
 
