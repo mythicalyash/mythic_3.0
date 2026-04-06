@@ -30,8 +30,16 @@ redisClient.on("error", (err) => console.error("Redis Client Error:", err));
 
 if (!globalForRedis.redisClient) {
     globalForRedis.redisClient = redisClient;
-    redisClient.connect().catch(console.error);
+}
+
+// Always call this before using redisClient — it's a no-op if already connected
+export async function getRedisClient() {
+    if (!redisClient.isOpen) {
+        await redisClient.connect();
+    }
+    return redisClient;
 }
 
 export default redisClient;
+
 
